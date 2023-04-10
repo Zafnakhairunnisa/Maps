@@ -99,6 +99,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         map.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
             public void onPoiClick(@NonNull PointOfInterest pointOfInterest) {
+                mMap.clear();
                 Marker poiMarker = mMap.addMarker(new MarkerOptions()
                         .position(pointOfInterest.latLng)
                         .title(pointOfInterest.name)
