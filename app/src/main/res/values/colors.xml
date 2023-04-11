@@ -11,4 +11,11 @@
     <color name="light_blue_200">#FF81D4FA</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
+    <color name="blue">#0d0a2b</color>
+    <color name="blue2">#cce3f0</color>
+    <color name="blue3">#1e2852</color>
+    <color name="cream">#ccc6c0</color>
+    <color name="cream2">#e0dfde</color>
+    <color name="yellow">#ccc5c0</color>
+    <color name="yellow2">#e88a43</color>
 </resources>
