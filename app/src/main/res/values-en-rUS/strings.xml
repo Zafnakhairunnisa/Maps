@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Maps</string>
+    <string name="location_details">LOCATION DETAILS</string>
+    <string name="normal">Normal Map</string>
+    <string name="satellite">Satellite Map</string>
+    <string name="terrain">Terrain Map</string>
+    <string name="hybrid">Hybrid Map</string>
+    <string name="language">Language</string>
+</resources>

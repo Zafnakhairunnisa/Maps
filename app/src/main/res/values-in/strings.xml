@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Maps</string>
+    <string name="location_details">DETAIL LOKASI</string>
+    <string name="normal">Peta Normal</string>
+    <string name="satellite">Peta Satelit</string>
+    <string name="terrain">Peta Topografi</string>
+    <string name="hybrid">Peta Hibrida</string>
+    <string name="language">Bahasa</string>
+</resources>

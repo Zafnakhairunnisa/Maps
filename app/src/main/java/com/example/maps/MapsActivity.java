@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
@@ -17,6 +18,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -140,6 +145,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.map_option, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.language) {
+            Intent languageIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
+            startActivity(languageIntent);
+            return true;
+        }
+        else {
+            switch (item.getItemId()) {
+                case R.id.normal_map:
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    return true;
+                case R.id.satellite_map:
+                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                    return true;
+                case R.id.hybrid_map:
+                    mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                    return true;
+                case R.id.terrain_map:
+                    mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+
+    }
 
 
     private void setPoiClicked(final GoogleMap map) {
