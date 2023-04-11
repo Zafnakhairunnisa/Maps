@@ -17,7 +17,7 @@ public class SimpleFragment extends Fragment {
 
     private GoogleMap mMap;
     private boolean oke = false;
-    TextView lat, lon, address, name;
+    TextView mLat, mLon, mAddress, mName;
 
     public SimpleFragment() {
         // Required empty public constructor
@@ -44,12 +44,25 @@ public class SimpleFragment extends Fragment {
         // Inflate the layout for this fragment
 //       return inflater.inflate(R.layout.fragment_simple, container, false);
 
-        lat = view.findViewById(R.id.latitudeMap);
-        lon = view.findViewById(R.id.longitudeMap);
-        address = view.findViewById(R.id.addressMap);
-        name = view.findViewById(R.id.nameMap);
+        mLat = view.findViewById(R.id.latitudeMap);
+        mLon = view.findViewById(R.id.longitudeMap);
+        mAddress = view.findViewById(R.id.addressMap);
+        mName = view.findViewById(R.id.nameMap);
 
-        
+        Bundle args = getArguments();
+        if (args != null) {
+            String name = args.getString("name");
+            String address = args.getString("address");
+            double latitude = args.getDouble("latitude");
+            double longitude = args.getDouble("longitude");
+
+            mName.setText(name);
+            mAddress.setText(address);
+            mLat.setText(String.valueOf(latitude) + ", ");
+            mLon.setText(String.valueOf(longitude));
+
+        }
+
 
         return view;
 

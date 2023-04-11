@@ -11,7 +11,9 @@ import androidx.fragment.app.FragmentTransaction;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -41,6 +44,8 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -90,14 +95,46 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         latLng.latitude,
                         latLng.longitude);
 
-                //untuk tambah marker
-                mMap.clear();
-                map.addMarker(new MarkerOptions()
+                Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
+                String address = "";
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                    if (addresses != null && addresses.size() > 0) {
+                        Address returnedAddress = addresses.get(0);
+                        address = returnedAddress.getAddressLine(0);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                MarkerOptions markerOptions = new MarkerOptions()
                         .position(latLng)
                         .snippet(text)
                         .title("Dropped pin")
-                );
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                markerOptions.zIndex(1f);
+
+                mMap.clear();
+                mMap.addMarker(markerOptions);
+
+                Bundle bundle = new Bundle();
+                bundle.putString("name", "Dropped pin");
+                bundle.putDouble("latitude", latLng.latitude);
+                bundle.putDouble("longitude", latLng.longitude);
+                bundle.putString("address", address);
+
+                SimpleFragment simpleFragment = SimpleFragment.newInstance();
+                simpleFragment.setArguments(bundle);
+
                 displayFragment();
+                //untuk tambah marker
+//                mMap.clear();
+//                map.addMarker(new MarkerOptions()
+//                        .position(latLng)
+//                        .snippet(text)
+//                        .title("Dropped pin")
+//                );
+//                displayFragment();
             }
 
         });
@@ -109,13 +146,50 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         map.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
             @Override
             public void onPoiClick(@NonNull PointOfInterest pointOfInterest) {
-                mMap.clear();
-                Marker poiMarker = mMap.addMarker(new MarkerOptions()
+
+                Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
+                String address = "";
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(pointOfInterest.latLng.latitude, pointOfInterest.latLng.longitude, 1);
+                    if (addresses != null && addresses.size() > 0) {
+                        Address returnedAddress = addresses.get(0);
+                        address = returnedAddress.getAddressLine(0);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                MarkerOptions markerOptions = new MarkerOptions()
                         .position(pointOfInterest.latLng)
                         .title(pointOfInterest.name)
-                );
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                markerOptions.zIndex(1f);
+
+                mMap.clear();
+                Marker poiMarker = mMap.addMarker(markerOptions);
                 poiMarker.showInfoWindow();
-                displayFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("name", pointOfInterest.name);
+                bundle.putString("address", address);
+                bundle.putDouble("latitude", pointOfInterest.latLng.latitude);
+                bundle.putDouble("longitude", pointOfInterest.latLng.longitude);
+                SimpleFragment simpleFragment = new SimpleFragment();
+                simpleFragment.setArguments(bundle);
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container, simpleFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+//                mMap.clear();
+//                Marker poiMarker = mMap.addMarker(new MarkerOptions()
+//                        .position(pointOfInterest.latLng)
+//                        .title(pointOfInterest.name)
+//                );
+//                poiMarker.showInfoWindow();
+//                displayFragment();
 
             }
 
