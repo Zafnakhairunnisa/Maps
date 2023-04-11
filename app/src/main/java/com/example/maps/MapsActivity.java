@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Context;
@@ -13,6 +15,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
+    private boolean isFragmentDisplayed = false;
 
 
 
@@ -67,16 +71,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        
+
         mMap = googleMap;
 
         setMapOnClick(mMap);
         setPoiClicked(mMap);
         enableMyLocation();
+
     }
 
     private void setMapOnClick(final GoogleMap map) {
         map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
             @Override
             public void onMapClick(@NonNull LatLng latLng) {
                 String text = String.format(Locale.getDefault(),
@@ -91,9 +97,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .snippet(text)
                         .title("Dropped pin")
                 );
+                displayFragment();
             }
+
         });
     }
+
+
 
     private void setPoiClicked(final GoogleMap map) {
         map.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
@@ -105,7 +115,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .title(pointOfInterest.name)
                 );
                 poiMarker.showInfoWindow();
+                displayFragment();
+
             }
+
+
         });
     }
 
@@ -125,6 +139,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         else {
             ActivityCompat.requestPermissions(this, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+    }
+
+    private void displayFragment() {
+        SimpleFragment simpleFragment = SimpleFragment.newInstance();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.replace(R.id.fragment_container, simpleFragment).addToBackStack(null).commit();
+        isFragmentDisplayed = true;
+    }
+
+    private void closeFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        SimpleFragment simpleFragment = (SimpleFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+        if (simpleFragment != null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.remove(simpleFragment).commit();
+            isFragmentDisplayed = false;
         }
     }
 
