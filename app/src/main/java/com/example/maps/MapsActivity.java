@@ -350,7 +350,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
        float currentValue = event.values[0];
 
 
-        if (currentValue >= 10 && currentValue <= 40000){
+        if (currentValue >= 0 && currentValue < 10){
 
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -380,7 +380,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         }
-        else if(currentValue >= 0 && currentValue < 10){
+        else if(currentValue >= 10 && currentValue <= 40000){
 
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(new OnMapReadyCallback() {
